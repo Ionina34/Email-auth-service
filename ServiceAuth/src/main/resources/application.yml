@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/users
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: none
+  kafka:
+    bootstrap-servers: localhost:9092
+  redis:
+    host: localhost
+    port: 6379
+  profiles:
+    active: apache-kafka #spring-kafka
+
+token:
+  signing:
+    key: secretKeySecretKeySecretKeySecretKeySecretKey
+
+app:
+  kafka:
+    kafkaRegistrationTopic: "registration-request"
+    kafkaConfirmationCodeListener: "confirmation-code"
+    kafkaEventGroupId: "kafka-auth-group-id"
+
+server:
+  port: 8000

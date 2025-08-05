@@ -1,0 +1,11 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+  profiles:
+    active: apache-kafka #spring-kafka
+
+app:
+  kafka:
+    kafkaRegistrationTopic: "confirmation-code"
+    kafkaConfirmationCodeListener: "registration-request"
+    kafkaEventGroupId: "kafka-auth-group-id"
