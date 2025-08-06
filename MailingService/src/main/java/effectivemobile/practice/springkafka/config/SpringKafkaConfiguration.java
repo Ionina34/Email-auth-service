@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import java.util.HashMap;
@@ -25,7 +26,7 @@ public class SpringKafkaConfiguration {
     private String bootstrapServices;
 
     @Value("${app.kafka.kafkaEventGroupId}")
-    private String kafkaOrderGroupId;
+    private String kafkaEventGroupId;
 
     @Bean
     public ProducerFactory<String, ConfirmationCode> producerFactory(ObjectMapper objectMapper) {
@@ -46,10 +47,12 @@ public class SpringKafkaConfiguration {
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> config = new HashMap<>();
+
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServices);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        config.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaOrderGroupId);
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaEventGroupId);
+        config.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
 
         return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), new StringDeserializer());
     }

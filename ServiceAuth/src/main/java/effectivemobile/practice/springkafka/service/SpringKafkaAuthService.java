@@ -40,23 +40,23 @@ public class SpringKafkaAuthService implements KafkaAuthService {
         try {
             authenticationService.registerUnconfirmedAccount(request);
             message = "A verification code has been sent to your email. Send it for verification to the address: '/verify'.";
+            kafkaTemplate.send(topicName, request.email());
         } catch (AccountNotVerified e) {
             kafkaTemplate.send(topicName, request.email());
             throw e;
         }
-        kafkaTemplate.send(topicName, request.email());
 
         return new MessageResponse(message);
     }
 
     @Override
-    public JwtAuthenticationResponse accountConfirmation(ConfirmationCode request) {
+    public JwtAuthenticationResponse accountConfirmation(ConfirmationCode request) throws TimeoutConfirmationCodeException{
         boolean isValid = confirmationCodeService.verifyConfirmationCode(request);
         if (isValid) {
             confirmationCodeService.deleteConfirmationCode(request.email());
             return authenticationService.tokenIssuance(request.email());
         } else {
-            throw new TimeoutConfirmationCodeException("The code has expired");
+            throw new TimeoutConfirmationCodeException("The code has expired or the code is incorrect");
         }
     }
 

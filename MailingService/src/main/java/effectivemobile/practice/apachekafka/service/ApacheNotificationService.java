@@ -17,7 +17,7 @@ import java.util.Random;
 @Profile("apache-kafka")
 public class ApacheNotificationService {
 
-    @Value("${app.kafka.kafkaRegistrationTopic}")
+    @Value("${app.kafka.kafkaConfirmationCodeTopic}")
     private String topicName;
 
     private static final int CODE_LENGTH = 4;

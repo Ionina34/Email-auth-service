@@ -12,7 +12,7 @@ spring:
     host: localhost
     port: 6379
   profiles:
-    active: apache-kafka #spring-kafka
+    active: spring-kafka #apache-kafka
 
 token:
   signing:

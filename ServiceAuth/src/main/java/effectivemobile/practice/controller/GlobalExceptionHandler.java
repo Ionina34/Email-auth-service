@@ -7,10 +7,11 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice
+@ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityExistsException.class)
@@ -30,8 +31,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TimeoutConfirmationCodeException.class)
     public ResponseEntity<ErrorResponse> handlerTimeoutConfirmationCode(TimeoutConfirmationCodeException e) {
         return ResponseEntity
-                .status(HttpStatus.REQUEST_TIMEOUT)
-                .body(new ErrorResponse("The code is invalid. Send a repeat registration request.", e.getMessage()));
+                .status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse("The code is incorrect or incorrect. Send a repeat registration request or check your email.", e.getMessage()));
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

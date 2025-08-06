@@ -37,7 +37,7 @@ public class ApacheKafkaEmailListener {
     public ApacheKafkaEmailListener(ApacheNotificationService notificationService,
                                     ObjectMapper objectMapper,
                                     @Value("${spring.kafka.bootstrap-servers}") String bootstrapServers,
-                                    @Value("${app.kafka.kafkaConfirmationCodeListener}") String topicName,
+                                    @Value("${app.kafka.kafkaRegistrationRequestListener}") String topicName,
                                     @Value("${app.kafka.kafkaEventGroupId}") String groupId) {
         this.notificationService = notificationService;
         this.objectMapper = objectMapper;

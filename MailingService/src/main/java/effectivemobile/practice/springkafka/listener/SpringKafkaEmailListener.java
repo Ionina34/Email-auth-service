@@ -11,6 +11,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 @Component
 @Profile("spring-kafka")
@@ -23,14 +24,14 @@ public class SpringKafkaEmailListener {
         this.notificationService = notificationService;
     }
 
-    @KafkaListener(topics = "${app.kafka.kafkaConfirmationCodeListener}",
-            groupId = "kafkaOrderGroupId",
+    @KafkaListener(topics = "${app.kafka.kafkaRegistrationRequestListener}",
+            groupId = "kafkaEventGroupId",
             containerFactory = "kafkaListenerContainerFactory")
     public void listen(@Payload String email,
                        @Header(value = KafkaHeaders.RECEIVED_KEY, required = false) UUID key,
                        @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
                        @Header(KafkaHeaders.RECEIVED_PARTITION) Integer partition,
-                       @Header(KafkaHeaders.RECEIVED_TIMESTAMP) Long timestamp) throws JsonProcessingException {
+                       @Header(KafkaHeaders.RECEIVED_TIMESTAMP) Long timestamp) throws JsonProcessingException, ExecutionException, InterruptedException {
         notificationService.processRegistrationRequest(email);
     }
 }

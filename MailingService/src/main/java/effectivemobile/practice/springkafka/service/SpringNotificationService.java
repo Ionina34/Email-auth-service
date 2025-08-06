@@ -9,12 +9,13 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @Profile("spring-kafka")
 public class SpringNotificationService {
 
-    @Value("${app.kafka.kafkaRegistrationTopic}")
+    @Value("${app.kafka.kafkaConfirmationCodeTopic}")
     private String topicName;
 
     private static final int CODE_LENGTH = 4;
@@ -28,7 +29,7 @@ public class SpringNotificationService {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void processRegistrationRequest(String email) throws JsonProcessingException {
+    public void processRegistrationRequest(String email) throws JsonProcessingException, ExecutionException, InterruptedException {
         String code = generateVerificationCode();
         ConfirmationCode confirmationCode = new ConfirmationCode(
                 email,
@@ -36,7 +37,7 @@ public class SpringNotificationService {
         );
         System.out.println("Verification code for " + email + ": " + code);
 
-        kafkaTemplate.send(topicName, confirmationCode);
+        kafkaTemplate.send(topicName, confirmationCode).get();
     }
 
     private String generateVerificationCode() {
