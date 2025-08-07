@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-auth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-auth
+  template:
+    metadata:
+      labels:
+        app: service-auth
+    spec:
+      containers:
+        - name: service-auth
+          image: service-auth:local
+          ports:
+            - containerPort: 8000
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://postgres:5432/users"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "postgres"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "postgres"
+            - name: SPRING_REDIS_HOST
+              value: "redis"
+            - name: SPRING_REDIS_PORT
+              value: "6379"
+            - name: SPRING_KAFKA_BOOTSTRAP-SERVERS
+              value: "kafka:9092"
+            - name: SPRING_PROFILES_ACTIVE
+              value: "spring-kafka"
+            - name: TOKEN_SIGNING_KEY
+              value: "secretKeySecretKeySecretKeySecretKeySecretKey"
+            - name: APP_KAFKA_KAFKACONFIRMATIONCODELISTENER
+              value: "confirmation-code"
+            - name: APP_KAFKA_KAFKAREGISTRATIONTOPIC
+              value: "registration-request"
+            - name: APP_KAFKA_KAFKAEVENTGROUPID
+              value: "kafka-auth-group-id"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-auth
+spec:
+  ports:
+    - port: 8000
+      targetPort: 8000
+      nodePort: 30001
+  selector:
+    app: service-auth
+  type: NodePort

@@ -1,15 +1,15 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/users
+    url: jdbc:postgresql://postgres:5432/users
     username: postgres
     password: postgres
   jpa:
     hibernate:
       ddl-auto: none
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:9092
   redis:
-    host: localhost
+    host: redis
     port: 6379
   profiles:
     active: spring-kafka #apache-kafka

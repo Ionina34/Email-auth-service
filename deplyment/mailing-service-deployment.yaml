@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mailing-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mailing-service
+  template:
+    metadata:
+      labels:
+        app: mailing-service
+    spec:
+      containers:
+        - name: mailing-service
+          image: mailing-service:local
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_KAFKA_BOOTSTRAP-SERVERS
+              value: "kafka:9092"
+            - name: SPRING_PROFILES_ACTIVE
+              value: "spring-kafka"
+            - name: APP_KAFKA_KAFKACONFIRMATIONCODETOPIC
+              value: "confirmation-code"
+            - name: APP_KAFKA_KAFKAREGISTRATIONREQUESTLISTENER
+              value: "registration-request"
+            - name: APP_KAFKA_KAFKAEVENTGROUPID
+              value: "kafka-auth-group-id"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mailing-service
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30002
+  selector:
+    app: mailing-service
+  type: NodePort
